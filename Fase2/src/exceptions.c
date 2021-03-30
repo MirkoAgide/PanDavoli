@@ -58,6 +58,16 @@ HIDDEN void create_process(state_t *proc_state){
     proc_state->reg_v0 = ret_val;
 }
 
+/*
+Get_CPU_Time (SYS6)
+Restituisce in v0 del chiamante il tempo trascorso dal processo
+nella cpu 
+*/
+HIDDEN void Get_Cpu_Time(){
+    currentProcess->proc_stat.reg_v0 = currentProcess->p_time; /* + funzione di Lorenzo ???? */
+}
+
+
 HIDDEN void retControl(state_t *proc_state, int isBlocking){
     /*we need to update pc, otherwise we will enter an infinite syscall loop*/
     proc_state->pc_epc += WORDLEN;
