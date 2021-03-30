@@ -58,6 +58,29 @@ HIDDEN void create_process(state_t *proc_state){
     proc_state->reg_v0 = ret_val;
 }
 
+/*
+Passeren (SYS3)
+This service requests the Nucleus to perform a P operation on a semaphore.
+Depending on the value of the semaphore, control is either returned to the
+Current Process, or this process is blocked on the ASL (transitions from “running”
+to “blocked”) and the Scheduler is called.  
+*/
+void Passeren(int *semaddr){
+
+	(*semaddr)--;
+
+	if((*semaddr) < 0){
+
+		insertBlocked (semaddr , currentProcess);
+		currentProcess->p_semAdd = semaddr;
+		currentProcess->p_time = currentProcess->p_time /* TODO: + funzione di lorenzo ??*/;
+		currentProcess = NULL;
+		scheduler();
+
+	}
+
+}
+
 HIDDEN void retControl(state_t *proc_state, int isBlocking){
     /*we need to update pc, otherwise we will enter an infinite syscall loop*/
     proc_state->pc_epc += WORDLEN;
